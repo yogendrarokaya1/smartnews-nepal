@@ -25,7 +25,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <form className="w-full max-w-md space-y-5">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md space-y-5">
       <h2 className="text-3xl font-semibold text-white text-center mb-8">
         Create Your Account
       </h2>
@@ -60,7 +60,7 @@ export default function RegisterForm() {
         error={errors.confirmPassword?.message}
       />
 
-      <Button text="Login" />
+      <Button text="Signup" />
 
       {/* Google Button */}
       <button

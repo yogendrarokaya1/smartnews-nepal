@@ -9,8 +9,7 @@ export default function HomePage() {
       </p>
 
       <div className="mt-6 space-x-4">
-        <Link href="/login" className="text-blue-600">Login</Link>
-        <Link href="/register" className="text-blue-600">Register</Link>
+        
       </div>
     </main>
   );

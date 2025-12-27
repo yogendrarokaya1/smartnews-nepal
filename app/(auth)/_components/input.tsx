@@ -1,17 +1,21 @@
-type Props = {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
-} & React.InputHTMLAttributes<HTMLInputElement>;
+}
 
-export default function Input({ label, error, ...props }: Props) {
+export default function Input({ label, error, ...props }: InputProps) {
   return (
-    <div className="mb-4">
-      <label className="block mb-1 font-medium">{label}</label>
+    <div className="space-y-1">
+      <label className="text-sm text-white">{label}</label>
+
       <input
         {...props}
-        className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-4 py-3 rounded-xl bg-transparent border border-white/70 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+
+      {error && (
+        <p className="text-red-400 text-xs mt-1">{error}</p>
+      )}
     </div>
   );
 }

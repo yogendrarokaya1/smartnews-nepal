@@ -1,16 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-type User = {
+interface User {
   name: string;
-  avatar: string;
-};
+  email: string;
+}
 
 export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -19,45 +21,65 @@ export default function Navbar() {
     }
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    router.push("/");
+  };
+
   return (
-    <nav className="bg-blue-900 text-white px-6 py-3 flex justify-between items-center">
-      {/* Left */}
-      <div className="flex items-center space-x-6">
-        <h1 className="font-bold text-lg">SmartNews Nepal</h1>
-
-        <Link href="/">Home</Link>
-        <Link href="#">Live</Link>
-        <Link href="#">Blog</Link>
-        <Link href="#">Videos</Link>
-        <Link href="#">Categories</Link>
+    <header className="w-full">
+      {/* Top Info Bar */}
+      <div className="bg-blue-700 text-white text-sm px-6 py-2 flex justify-between">
+        <span>☁️ Mostly Cloudy | 16°C</span>
+        <span>Fri, 19 November | 1:00 pm</span>
       </div>
 
-      {/* Right */}
-      <div className="flex items-center space-x-4">
+      {/* Main Navbar */}
+      <nav className="bg-[#0a0a3c] text-white px-6 py-3 flex items-center justify-between">
+        {/* Logo */}
+        <div className="flex items-center gap-2">
+          <Image
+            src="/images/logo2.png"
+            alt="SmartNews"
+            width={40}
+            height={40}
+          />
+          <span className="font-bold text-lg">SmartNews Nepal</span>
+        </div>
+
+        {/* Menu */}
+        <ul className="hidden md:flex gap-6 text-sm font-medium">
+          <li><Link href="/">Home</Link></li>
+          <li><Link href="/live">Live</Link></li>
+          <li><Link href="/blog">Blog</Link></li>
+          <li><Link href="/videos">Videos</Link></li>
+          <li><Link href="/horoscope">Horoscope</Link></li>
+          <li className="cursor-pointer">Categories ▾</li>
+        </ul>
+
+        {/* Auth Section */}
         {!user ? (
-          <>
-            <Link href="/login">Login</Link>
-            <Link href="/register">Register</Link>
-          </>
+          <Link
+            href="/login"
+            className="bg-white text-blue-700 px-4 py-1.5 rounded-md text-sm font-semibold hover:bg-gray-200"
+          >
+            Login
+          </Link>
         ) : (
-          <>
-            {/* Notification */}
-            <button title="Notifications">🔔</button>
-
-            {/* Profile */}
-            <div className="flex items-center space-x-2">
-              <Image
-                src={user.avatar}
-                alt="profile"
-                width={32}
-                height={32}
-                className="rounded-full"
-              />
-              <span>{user.name}</span>
-            </div>
-          </>
+          <div className="flex items-center gap-4">
+            <span className="text-sm font-medium">
+              👋 {user.name}
+            </span>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md text-sm"
+            >
+              Logout
+            </button>
+          </div>
         )}
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 }

@@ -1,82 +1,131 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { handleLogout } from "@/lib/actions/auth-action";
+import Cookies from "js-cookie";
 
-interface User {
-  name: string;
-  email: string;
-}
+const NAV_LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+];
 
-export default function Navbar() {
-  const [user, setUser] = useState<User | null>(null);
+export default function Header() {
+  const pathname = usePathname();
   const router = useRouter();
 
+  const [open, setOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // ✅ CHECK COOKIE ON LOAD
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    const token = Cookies.get("auth_token"); // must match cookie name
+    setIsLoggedIn(!!token);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
-    router.push("/");
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname?.startsWith(href);
+
+  // ✅ LOGOUT HANDLER
+  const onLogout = async () => {
+    await handleLogout(); // server action → clears cookies
+    Cookies.remove("auth_token");
+    Cookies.remove("user_data");
+
+    setIsLoggedIn(false);
+    router.push("/login");
   };
 
   return (
-    <header className="w-full">
-      {/* Top Info Bar */}
-      <div className="bg-blue-700 text-white text-sm px-6 py-2 flex justify-between">
-        <span>☁️ Mostly Cloudy | 16°C</span>
-        <span>Fri, 19 November | 1:00 pm</span>
-      </div>
+    <header className="sticky top-0 z-50 backdrop-blur border-b border-black/10 dark:border-white/10">
+      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]">
 
-      {/* Main Navbar */}
-      <nav className="bg-[#0a0a3c] text-white px-6 py-3 flex items-center justify-between">
-        {/* Logo */}
-        <div className="flex items-center gap-2">
-          <Image
-            src="/images/logo2.png"
-            alt="SmartNews"
-            width={40}
-            height={40}
-          />
-          <span className="font-bold text-lg">SmartNews Nepal</span>
+          {/* LEFT LOGO */}
+          <Link href="/" className="flex items-center gap-2">
+            <span className="h-8 w-8 rounded-md bg-black text-white flex items-center justify-center font-bold">
+              M
+            </span>
+            <span className="font-semibold">MyApp</span>
+          </Link>
+
+          {/* CENTER LINKS */}
+          <div className="hidden md:flex gap-6 justify-center">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-sm font-medium ${
+                  isActive(link.href)
+                    ? "text-black"
+                    : "text-gray-500 hover:text-black"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* RIGHT AUTH */}
+          <div className="flex items-center gap-2 justify-end">
+            {!isLoggedIn ? (
+              <Link
+                href="/login"
+                className="h-9 px-3 inline-flex items-center rounded-md border text-sm font-medium"
+              >
+                Login
+              </Link>
+            ) : (
+              <button
+                onClick={onLogout}
+                className="h-9 px-3 inline-flex items-center rounded-md border text-sm font-medium"
+              >
+                Logout
+              </button>
+            )}
+
+            {/* MOBILE MENU BUTTON */}
+            <button
+              onClick={() => setOpen(!open)}
+              className="md:hidden h-9 w-9 border rounded-md flex items-center justify-center"
+            >
+              ☰
+            </button>
+          </div>
         </div>
 
-        {/* Menu */}
-        <ul className="hidden md:flex gap-6 text-sm font-medium">
-          <li><Link href="/">Home</Link></li>
-          <li><Link href="/live">Live</Link></li>
-          <li><Link href="/blog">Blog</Link></li>
-          <li><Link href="/videos">Videos</Link></li>
-          <li><Link href="/horoscope">Horoscope</Link></li>
-          <li className="cursor-pointer">Categories ▾</li>
-        </ul>
+        {/* MOBILE MENU */}
+        {open && (
+          <div className="md:hidden py-4 border-t">
+            <div className="flex flex-col gap-2">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="px-3 py-2 text-sm"
+                >
+                  {link.label}
+                </Link>
+              ))}
 
-        {/* Auth Section */}
-        {!user ? (
-          <Link
-            href="/login"
-            className="bg-white text-blue-700 px-4 py-1.5 rounded-md text-sm font-semibold hover:bg-gray-200"
-          >
-            Login
-          </Link>
-        ) : (
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-medium">
-              👋 {user.name}
-            </span>
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md text-sm"
-            >
-              Logout
-            </button>
+              {!isLoggedIn ? (
+                <Link
+                  href="/login"
+                  className="px-3 py-2 border rounded-md text-sm"
+                >
+                  Login
+                </Link>
+              ) : (
+                <button
+                  onClick={onLogout}
+                  className="px-3 py-2 border rounded-md text-sm"
+                >
+                  Logout
+                </button>
+              )}
+            </div>
           </div>
         )}
       </nav>

@@ -2,33 +2,66 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema, RegisterFormData } from "../schemas/register.schema";
+import { registerSchema, RegisterData } from "../schemas/auth.schema";
 import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import Input from "./input";
 import Button from "./button";
 import Link from "next/link";
+import { register } from "@/lib/api/auth";
+import { handleRegister } from "@/lib/actions/auth-action";
+import { z } from "zod";
+
+
 
 export default function RegisterForm() {
-  const router = useRouter();
+    const router = useRouter();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm<RegisterData>({
+        resolver: zodResolver(registerSchema),
+        mode: "onSubmit",
+    });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
-  });
+    const [pending, setTransition] = useTransition()
+    const [error, setError] = useState<string | null>(null);
 
-  const onSubmit = () => {
-    alert("Registration successful!");
-    router.push("/login");
-  };
+    const submit = async (values: RegisterData) => {
+        setError(null);
+        setTransition(async () => {
+            try {
+
+                const response = await handleRegister(values);
+                if (!response.success) {
+                    throw new Error(response.message);
+                }
+                if (response.success) {
+                    router.push("/login");
+                } else {
+                    setError('Registration failed');
+                }
+
+            } catch (err: Error | any) {
+                setError(err.message || 'Registration failed');
+            }
+        });
+        // GO TO LOGIN PAGE
+        console.log("register", values);
+    };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md space-y-5">
+    <form onSubmit={handleSubmit(submit)} className="w-full max-w-md space-y-5">
       <h2 className="text-3xl font-semibold text-white text-center mb-8">
         Create Your Account
       </h2>
+
+      {error && (
+        <div className="bg-red-500/20 text-red-400 p-3 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
 
       <Input
         label="Full Name"
@@ -45,6 +78,13 @@ export default function RegisterForm() {
       />
 
       <Input
+        label="Phonenumber"
+        placeholder="Enter your phone number"
+        {...register("phoneNumber")}
+        error={errors.phoneNumber?.message}
+      />
+
+      <Input
         label="Password"
         type="password"
         placeholder="Enter your password"
@@ -55,21 +95,14 @@ export default function RegisterForm() {
       <Input
         label="Confirm Password"
         type="password"
-        placeholder="Enter your password"
+        placeholder="Confirm your password"
         {...register("confirmPassword")}
         error={errors.confirmPassword?.message}
       />
 
-      <Button text="Signup" />
-
-      {/* Google Button */}
-      <button
-        type="button"
-        className="w-full flex items-center justify-center gap-3 bg-white text-black py-3 rounded-xl font-medium"
-      >
-        <img src="/images/google.png" className="w-5 h-5" />
-        Continue with Google
-      </button>
+      <Button
+        text={pending ? "Signing up..." : "Signup"}
+      />
 
       <p className="text-center text-sm text-white/80">
         Already have an account?{" "}
@@ -80,3 +113,4 @@ export default function RegisterForm() {
     </form>
   );
 }
+

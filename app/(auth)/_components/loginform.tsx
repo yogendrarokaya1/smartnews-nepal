@@ -1,37 +1,53 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { LoginFormData, loginSchema } from "../schemas/login.schema";
+import { LoginData, loginSchema } from "../schemas/auth.schema";
+import { handleLogin } from "@/lib/actions/auth-action";
 import Input from "./input";
 import Button from "./button";
-import Link from "next/link";
 
 export default function LoginForm() {
-  const router = useRouter();
+    const router = useRouter();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm<LoginData>({
+        resolver: zodResolver(loginSchema),
+        mode: "onSubmit",
+    });
+    const [pending, setTransition] = useTransition()
+    const [error, setError] = useState<string | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-  });
+    const submit = async (values: LoginData) => {
+        setError(null);
 
-  const onSubmit = (data: LoginFormData) => {
-    const user = {
-      name: "Yogendra Rokaya",
-      email: data.email,
+        // GOTO
+        setTransition(async () => {
+            try {
+                const response = await handleLogin(values);
+                if (!response.success) {
+                    throw new Error(response.message);
+                }
+                if (response.success) {
+                    router.push("/");
+                } else {
+                    setError('Login failed');
+                }
+            } catch (err: Error | any) {
+                setError(err.message || 'Login failed');
+            }
+        })
     };
-
-    localStorage.setItem("user", JSON.stringify(user));
-    router.push("/");
-  };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(submit)}
       className="w-full max-w-md space-y-4"
     >
       <h2 className="text-2xl font-semibold text-white text-center mb-6">

@@ -51,7 +51,7 @@ export default function RegisterForm() {
             {error && (
                 <p className="text-sm text-red-600">{error}</p>
             )}
-            <div className="space-y-1">
+            <div className="space-y-1 ">
                 <label className="text-sm font-medium" htmlFor="fullName">Full name</label>
                 <input
                     id="fullName"

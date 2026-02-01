@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-// import ThemeToggle from "../../_components/ThemeToggle";
+import ThemeToggle from "../../_components/ThemeToggle";
 
 const NAV_LINKS = [
     { href: "/", label: "Home" },
@@ -66,7 +66,7 @@ export default function Header() {
                         </div>
 
                         {/* Theme toggle */}
-                        {/* <ThemeToggle /> */}
+                        <ThemeToggle />
 
                         {/* Mobile hamburger */}
                         <button

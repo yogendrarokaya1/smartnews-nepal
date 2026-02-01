@@ -5,6 +5,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { handleLogout } from "@/lib/actions/auth-action";
 import Cookies from "js-cookie";
+import ThemeToggle from "./ThemeToggle";
+
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -84,7 +86,8 @@ export default function Header() {
                 Logout
               </button>
             )}
-
+              {/* Theme toggle */}
+                        <ThemeToggle />
             {/* MOBILE MENU BUTTON */}
             <button
               onClick={() => setOpen(!open)}
@@ -113,7 +116,7 @@ export default function Header() {
               {!isLoggedIn ? (
                 <Link
                   href="/login"
-                  className="px-3 py-2 border rounded-md text-sm"
+                  className="px-3 py-2 border rounded-md text-sm text-black dark:text-white"
                 >
                   Login
                 </Link>

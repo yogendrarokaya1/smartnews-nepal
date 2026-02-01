@@ -8,48 +8,48 @@ import { useState, useTransition } from "react";
 import Input from "./input";
 import Button from "./button";
 import Link from "next/link";
-import { register } from "@/lib/api/auth";
 import { handleRegister } from "@/lib/actions/auth-action";
-import { z } from "zod";
+import { toast } from "react-toastify";
 
 
 
 export default function RegisterForm() {
-    const router = useRouter();
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-    } = useForm<RegisterData>({
-        resolver: zodResolver(registerSchema),
-        mode: "onSubmit",
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterData>({
+    resolver: zodResolver(registerSchema),
+    mode: "onSubmit",
+  });
+
+  const [pending, setTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null);
+
+  const submit = async (values: RegisterData) => {
+    setError(null);
+    setTransition(async () => {
+      try {
+
+        const response = await handleRegister(values);
+        if (!response.success) {
+          throw new Error(response.message);
+        }
+        if (response.success) {
+          router.push("/login");
+          toast.success('Registration successful!');
+        } else {
+          setError('Registration failed');
+        }
+
+      } catch (err: Error | any) {
+        setError(err.message || 'Registration failed');
+      }
     });
-
-    const [pending, setTransition] = useTransition()
-    const [error, setError] = useState<string | null>(null);
-
-    const submit = async (values: RegisterData) => {
-        setError(null);
-        setTransition(async () => {
-            try {
-
-                const response = await handleRegister(values);
-                if (!response.success) {
-                    throw new Error(response.message);
-                }
-                if (response.success) {
-                    router.push("/login");
-                } else {
-                    setError('Registration failed');
-                }
-
-            } catch (err: Error | any) {
-                setError(err.message || 'Registration failed');
-            }
-        });
-        // GO TO LOGIN PAGE
-        console.log("register", values);
-    };
+    // GO TO LOGIN PAGE
+    console.log("register", values);
+  };
 
   return (
     <form onSubmit={handleSubmit(submit)} className="w-full max-w-md space-y-5">

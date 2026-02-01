@@ -1,5 +1,6 @@
+import { ToastContainer } from "react-toastify";
 import "./globals.css";
-import { Toaster } from "react-hot-toast";
+import { ThemeProvider } from "next-themes";
 
 export default function RootLayout({
   children,
@@ -8,8 +9,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <ThemeProvider>
       <body>{children}</body>
-      <Toaster position="top-right" />
+      </ThemeProvider>
+    <ToastContainer theme="colored"></ToastContainer>
     </html>
   );
 }

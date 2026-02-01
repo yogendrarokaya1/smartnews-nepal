@@ -1,7 +1,6 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useState, useTransition } from "react";
@@ -10,6 +9,7 @@ import { LoginData, loginSchema } from "../schemas/auth.schema";
 import { handleLogin } from "@/lib/actions/auth-action";
 import Input from "./input";
 import Button from "./button";
+import { toast } from "react-toastify";
 
 export default function LoginForm() {
     const router = useRouter();
@@ -35,6 +35,7 @@ export default function LoginForm() {
                     throw new Error(response.message);
                 }
                 if (response.success) {
+                  toast.success('Login successful!'); 
                     router.push("/");
                 } else {
                     setError('Login failed');

@@ -1,23 +1,24 @@
-export default function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
-      {/* LEFT SIDE - LOGO */}
-      <div className="hidden md:flex items-center justify-center bg-white">
-        <img
-          src="/images/logo.png"
-          alt="SmartNews Nepal"
-          className="w-[420px]"
-        />
-      </div>
+import Image from "next/image";
 
-      {/* RIGHT SIDE - FORM */}
-      <div className="flex items-center justify-center bg-gradient-to-br from-[#0A003D] to-[#1B0A6E] px-6">
-        {children}
-      </div>
-    </div>
-  );
+export default function Layout({ children }: { children: React.ReactNode }) {
+    return (
+        <section className="h-screen">
+            <div className="h-full w-full grid md:grid-cols-2 md:gap-0">
+
+                <div className="hidden md:flex items-center justify-center bg-white">
+                    <img
+                        src="/images/logo.png"
+                        alt="SmartNews Nepal"
+                        className="w-[420px]"
+                    />
+                </div>
+
+                <div className="flex h-full items-center bg-gradient-to-br from-[#0A003D] to-[#1B0A6E] justify-center px-4 md:px-10">
+                    <div className="w-full max-w-md  p-6">
+                        {children}
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
 }

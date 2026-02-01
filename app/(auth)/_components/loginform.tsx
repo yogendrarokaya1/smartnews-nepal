@@ -1,15 +1,13 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { LoginData, loginSchema } from "../schemas/auth.schema";
+import { LoginData, loginSchema } from "../schema";
 import { handleLogin } from "@/lib/actions/auth-action";
-import Input from "./input";
-import Button from "./button";
-import { toast } from "react-toastify";
 
 export default function LoginForm() {
     const router = useRouter();
@@ -26,8 +24,6 @@ export default function LoginForm() {
 
     const submit = async (values: LoginData) => {
         setError(null);
-
-        // GOTO
         setTransition(async () => {
             try {
                 const response = await handleLogin(values);
@@ -35,8 +31,13 @@ export default function LoginForm() {
                     throw new Error(response.message);
                 }
                 if (response.success) {
-                  toast.success('Login successful!'); 
-                    router.push("/");
+                    if (response.data?.role == 'admin') {
+                        return router.replace("/admin");
+                    }
+                    if (response.data?.role === 'user') {
+                        return router.replace("/user/dashboard");
+                    }
+                    return router.replace("/");
                 } else {
                     setError('Login failed');
                 }
@@ -46,57 +47,52 @@ export default function LoginForm() {
         })
     };
 
-  return (
-    <form
-      onSubmit={handleSubmit(submit)}
-      className="w-full max-w-md space-y-4"
-    >
-      <h2 className="text-2xl font-semibold text-white text-center mb-6">
-        Welcome Back
-      </h2>
+    return (
+        <form onSubmit={handleSubmit(submit)} className="space-y-4">
+            {error && (
+                <p className="text-sm text-red-600">{error}</p>
+            )}
+            <div className="space-y-1">
+                <label className="text-sm font-medium" htmlFor="email">Email</label>
+                <input
+                    id="email"
+                    type="email"
+                    autoComplete="email"
+                    className="h-10 w-full rounded-md border border-black/10 dark:border-white/15 bg-background px-3 text-sm outline-none focus:border-foreground/40"
+                    {...register("email")}
+                    placeholder="you@example.com"
+                />
+                {errors.email?.message && (
+                    <p className="text-xs text-red-600">{errors.email.message}</p>
+                )}
+            </div>
 
-      <Input
-        label="Email"
-        type="email"
-        placeholder="Enter your email"
-        {...register("email")}
-        error={errors.email?.message}
-      />
+            <div className="space-y-1">
+                <label className="text-sm font-medium" htmlFor="password">Password</label>
+                <input
+                    id="password"
+                    type="password"
+                    autoComplete="current-password"
+                    className="h-10 w-full rounded-md border border-black/10 dark:border-white/15 bg-background px-3 text-sm outline-none focus:border-foreground/40"
+                    {...register("password")}
+                    placeholder="••••••"
+                />
+                {errors.password?.message && (
+                    <p className="text-xs text-red-600">{errors.password.message}</p>
+                )}
+            </div>
 
-      <Input
-        label="Password"
-        type="password"
-        placeholder="Enter your password"
-        {...register("password")}
-        error={errors.password?.message}
-      />
+            <button
+                type="submit"
+                disabled={isSubmitting || pending}
+                className="h-10 w-full rounded-md bg-foreground text-background text-sm font-semibold hover:opacity-90 disabled:opacity-60"
+            >
+                {isSubmitting || pending ? "Logging in..." : "Log in"}
+            </button>
 
-      <div className="text-right">
-        <a
-          href="#"
-          className="text-sm text-blue-400 hover:underline"
-        >
-          Forgot password?
-        </a>
-      </div>
-
-      <Button text="Login" />
-
-      {/* Google Login */}
-      <button
-        type="button"
-        className="w-full flex items-center justify-center gap-2 bg-white text-black py-2 rounded-md hover:bg-gray-100 transition"
-      >
-        <img src="/images/google.png" alt="Google" className="w-5 h-5" />
-        Continue with Google
-      </button>
-
-      <p className="text-sm text-center text-gray-300">
-        Don’t have an account?{" "}
-        <Link href="/register" className="text-blue-400 hover:underline">
-          Sign up
-        </Link>
-      </p>
-    </form>
-  );
+            <div className="mt-1 text-center text-sm">
+                Don't have an account? <Link href="/register" className="font-semibold hover:underline">Sign up</Link>
+            </div>
+        </form>
+    );
 }

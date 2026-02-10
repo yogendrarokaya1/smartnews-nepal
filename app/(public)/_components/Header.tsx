@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import ThemeToggle from "../../_components/ThemeToggle";
-
+import { useAuth } from "@/context/AuthContext";
 const NAV_LINKS = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
@@ -13,6 +13,7 @@ const NAV_LINKS = [
 export default function Header() {
     const pathname = usePathname();
     const [open, setOpen] = useState(false);
+    const { user, logout } = useAuth();
 
     const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname?.startsWith(href));
 
@@ -24,10 +25,10 @@ export default function Header() {
                     <div className="flex items-center gap-2">
                         <Link href="/" className="flex items-center gap-2 group">
                             <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-foreground text-background font-semibold">
-                                SNN
+                                SN
                             </span>
                             <span className="text-base font-semibold tracking-tight group-hover:opacity-80 transition-opacity">
-                                SmartNews Nepal
+                                SmartNews
                             </span>
                         </Link>
                     </div>
@@ -48,22 +49,37 @@ export default function Header() {
                         ))}
                     </div>
 
-                    {/* Right: Auth + Mobile Toggle */}
                     <div className="flex items-center gap-2 md:justify-self-end">
-                        <div className="hidden sm:flex items-center gap-2">
-                            <Link
-                                href="/login"
-                                className="h-9 px-3 inline-flex items-center justify-center rounded-md border border-black/10 dark:border-white/15 text-sm font-medium hover:bg-foreground/5 transition-colors"
-                            >
-                                Log in
-                            </Link>
-                            <Link
-                                href="/register"
-                                className="h-9 px-3 inline-flex items-center justify-center rounded-md bg-foreground text-background text-sm font-semibold hover:opacity-90 transition-opacity"
-                            >
-                                Sign up
-                            </Link>
-                        </div>
+                        {/* Right: Auth + Mobile Toggle */}
+                        {
+                            user ? (
+                                <div className="flex items-center gap-4 md:justify-self-end">
+                                    <span className="text-sm font-medium">Hello, {user.username}</span>
+                                    <button
+                                        onClick={logout}
+                                        className="h-9 px-3 inline-flex items-center justify-center rounded-md border border-black/10 dark:border-white/15 text-sm font-medium hover:bg-foreground/5 transition-colors"
+                                    >
+                                        Log out
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="hidden sm:flex items-center gap-2">
+                                    <Link
+                                        href="/login"
+                                        className="h-9 px-3 inline-flex items-center justify-center rounded-md border border-black/10 dark:border-white/15 text-sm font-medium hover:bg-foreground/5 transition-colors"
+                                    >
+                                        Log in
+                                    </Link>
+                                    <Link
+                                        href="/register"
+                                        className="h-9 px-3 inline-flex items-center justify-center rounded-md bg-foreground text-background text-sm font-semibold hover:opacity-90 transition-opacity"
+                                    >
+                                        Sign up
+                                    </Link>
+                                </div>
+                            )
+                        }
+
 
                         {/* Theme toggle */}
                         <ThemeToggle />
@@ -127,6 +143,6 @@ export default function Header() {
                     </div>
                 </div>
             </nav>
-        </header>
+        </header >
     );
 }

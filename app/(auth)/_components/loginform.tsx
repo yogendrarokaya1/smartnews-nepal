@@ -47,6 +47,7 @@ export default function LoginForm() {
         })
     };
 
+
     return (
         <form onSubmit={handleSubmit(submit)} className="space-y-4">
             {error && (
@@ -92,6 +93,9 @@ export default function LoginForm() {
 
             <div className="mt-1 text-center text-sm">
                 Don't have an account? <Link href="/register" className="font-semibold hover:underline">Sign up</Link>
+            </div>
+            <div className="mt-1 text-center text-sm">
+                <Link href="/forget-password" className="font-semibold hover:underline">Forgot Password?</Link>
             </div>
         </form>
     );

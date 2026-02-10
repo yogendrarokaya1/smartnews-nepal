@@ -8,7 +8,6 @@ import { handleUpdateProfile } from "@/lib/actions/auth-action";
 
 import { z } from "zod";
 import { UpdateUserData, updateUserSchema } from "../schema";
-import { BACKEND_URL } from "@/lib/api/endpoints";
 
 export default function UpdateUserForm({
     user
@@ -105,7 +104,7 @@ export default function UpdateUserForm({
                         </div>
                     ) : user?.imageUrl ? (
                         <Image
-                            src={BACKEND_URL + user.imageUrl}
+                            src={process.env.NEXT_PUBLIC_API_BASE_URL + user.imageUrl}
                             alt="Profile Image"
                             width={100}
                             height={100}
@@ -135,16 +134,7 @@ export default function UpdateUserForm({
                     />
                     {errors.image && <p className="text-sm text-red-600">{errors.image.message}</p>}
                 </div>
-                <div>
-                    <label className="block text-sm font-medium mb-1" htmlFor="phoneNumber">Phone Number</label>
-                    <input
-                        id="phoneNumber"
-                        type="text"
-                        {...register("phoneNumber")}
-                        className="w-full border border-gray-300 rounded px-3 py-2"
-                    />
-                    {errors.phoneNumber && <p className="text-sm text-red-600">{errors.phoneNumber.message}</p>}
-                </div>
+                
                 <div>
                     <label className="block text-sm font-medium mb-1" htmlFor="email">Email</label>
                     <input
@@ -167,6 +157,17 @@ export default function UpdateUserForm({
                     {errors.fullName && <p className="text-sm text-red-600">{errors.fullName.message}</p>}
                 </div>
 
+                {/* Phone Number Input */}
+                <div>
+                    <label className="block text-sm font-medium mb-1" htmlFor="phoneNumber">Phone Number</label>
+                    <input
+                        id="phoneNumber"
+                        type="text"
+                        {...register("phoneNumber")}
+                        className="w-full border border-gray-300 rounded px-3 py-2"
+                    />
+                    {errors.phoneNumber && <p className="text-sm text-red-600">{errors.phoneNumber.message}</p>}
+                </div>
 
                 {/* Submit Button */}
                 <button

@@ -5,6 +5,7 @@ import { cookies } from "next/headers"
 interface UserData {
     _id: string;
     email: string;
+    phoneNumber: string;    
     role: string;
     createdAt: string;
     updatedAt: string;

@@ -1,5 +1,7 @@
 import type { NextConfig } from 'next'
-import { BACKEND_URL as backendURL } from '@/lib/api/endpoints';
+
+const backendURL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 const IsDEV = backendURL.startsWith("http://localhost");
 
 const config: NextConfig = {

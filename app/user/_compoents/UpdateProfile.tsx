@@ -8,6 +8,7 @@ import { handleUpdateProfile } from "@/lib/actions/auth-action";
 
 import { z } from "zod";
 import { UpdateUserData, updateUserSchema } from "../schema";
+import { BACKEND_URL } from "@/lib/api/endpoints";
 
 export default function UpdateUserForm({
     user
@@ -104,7 +105,7 @@ export default function UpdateUserForm({
                         </div>
                     ) : user?.imageUrl ? (
                         <Image
-                            src={process.env.NEXT_PUBLIC_API_BASE_URL + user.imageUrl}
+                            src={BACKEND_URL + user.imageUrl}
                             alt="Profile Image"
                             width={100}
                             height={100}
@@ -154,7 +155,7 @@ export default function UpdateUserForm({
                     />
                     {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
                 </div>
-                {/* Full Name Input */}
+                {/* First Name Input */}
                 <div>
                     <label className="block text-sm font-medium mb-1" htmlFor="fullName">Full Name</label>
                     <input
@@ -165,6 +166,7 @@ export default function UpdateUserForm({
                     />
                     {errors.fullName && <p className="text-sm text-red-600">{errors.fullName.message}</p>}
                 </div>
+
 
                 {/* Submit Button */}
                 <button

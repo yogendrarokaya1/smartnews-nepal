@@ -14,6 +14,8 @@ export default async function Page() {
         notFound();
     }
 
+    console.log(result)
+
     return (
         <div>
             <UpdateUserForm user={result.data} />

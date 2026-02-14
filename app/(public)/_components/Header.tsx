@@ -1,148 +1,248 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-import ThemeToggle from "../../_components/ThemeToggle";
+import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
+
 const NAV_LINKS = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
+  { href: "/", label: "Home" },
+  { href: "/live", label: "Live" },
+  { href: "/blog", label: "Blog" },
+  { href: "/videos", label: "Videos" },
+  { href: "/horoscope", label: "Horoscope" },
 ];
 
 export default function Header() {
-    const pathname = usePathname();
-    const [open, setOpen] = useState(false);
-    const { user, logout } = useAuth();
+  const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname?.startsWith(href));
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-    return (
-        <header className="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-black/10 dark:border-white/10">
-            <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Global">
-                <div className="flex h-16 items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr] w-full">
-                    {/* Left: Logo */}
-                    <div className="flex items-center gap-2">
-                        <Link href="/" className="flex items-center gap-2 group">
-                            <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-foreground text-background font-semibold">
-                                SN
-                            </span>
-                            <span className="text-base font-semibold tracking-tight group-hover:opacity-80 transition-opacity">
-                                SmartNews
-                            </span>
-                        </Link>
-                    </div>
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname?.startsWith(href);
 
-                    {/* Center: Desktop Nav */}
-                    <div className="hidden md:flex items-center gap-6 justify-self-center">
-                        {NAV_LINKS.map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className={
-                                    "text-sm font-medium transition-colors hover:text-foreground/80 " +
-                                    (isActive(link.href) ? "text-foreground" : "text-foreground/60")
-                                }
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
-                    </div>
+  return (
+    <header className="w-full sticky top-0 z-50 shadow-md">
 
-                    <div className="flex items-center gap-2 md:justify-self-end">
-                        {/* Right: Auth + Mobile Toggle */}
-                        {
-                            user ? (
-                                <div className="flex items-center gap-4 md:justify-self-end">
-                                    <span className="text-sm font-medium">Hello, {user.username}</span>
-                                    <button
-                                        onClick={logout}
-                                        className="h-9 px-3 inline-flex items-center justify-center rounded-md border border-black/10 dark:border-white/15 text-sm font-medium hover:bg-foreground/5 transition-colors"
-                                    >
-                                        Log out
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="hidden sm:flex items-center gap-2">
-                                    <Link
-                                        href="/login"
-                                        className="h-9 px-3 inline-flex items-center justify-center rounded-md border border-black/10 dark:border-white/15 text-sm font-medium hover:bg-foreground/5 transition-colors"
-                                    >
-                                        Log in
-                                    </Link>
-                                    <Link
-                                        href="/register"
-                                        className="h-9 px-3 inline-flex items-center justify-center rounded-md bg-foreground text-background text-sm font-semibold hover:opacity-90 transition-opacity"
-                                    >
-                                        Sign up
-                                    </Link>
-                                </div>
-                            )
-                        }
+      {/* ===== Top Bar ===== */}
+      <div className="bg-[#0B0140] text-white text-xs px-4 py-1 flex justify-between">
+        <span>🌤 Mostly Cloudy | 16°C</span>
+        <span>Fri, 19 November | 1:00 pm</span>
+      </div>
 
+      {/* ===== Middle Header (Logo + BG Image) ===== */}
+      <div className="relative w-full h-16">
+        <Image
+          src="/images/headerimg.png"
+          alt="Header Background"
+          fill
+          priority
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-black/20" />
+        <div className="relative z-10 flex items-center h-full px-6">
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+              src="/images/logo.png"
+              alt="Logo"
+              width={48}
+              height={48}
+              className="object-contain"
+            />
+            <span className="text-xl font-bold text-white">SmartNews</span>
+          </Link>
+        </div>
+      </div>
 
-                        {/* Theme toggle */}
-                        <ThemeToggle />
+      {/* ===== Bottom Navbar ===== */}
+      <nav className="bg-[#0B0140] px-4 md:px-14">
+        <div className="flex items-center justify-between h-12">
 
-                        {/* Mobile hamburger */}
-                        <button
-                            type="button"
-                            onClick={() => setOpen((v) => !v)}
-                            aria-label="Toggle menu"
-                            aria-expanded={open}
-                            className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-md border border-black/10 dark:border-white/15 hover:bg-foreground/5 transition-colors"
-                        >
-                            {open ? (
-                                // Close icon
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-                                    <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
-                                </svg>
-                            ) : (
-                                // Hamburger icon
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-                                    <path fillRule="evenodd" d="M3.75 5.25a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Zm0 6a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Zm0 6a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
-                                </svg>
-                            )}
-                        </button>
-                    </div>
+          {/* Left Menu */}
+          <div className="flex items-center gap-6 text-sm font-medium">
+
+            {/* Mobile Toggle */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden text-xl text-white"
+            >
+              ☰
+            </button>
+
+            {/* Desktop Links */}
+            <div className="hidden md:flex items-center gap-6 text-white">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={
+                    "transition-colors duration-200 " +
+                    (isActive(link.href)
+                      ? "text-red-500 font-semibold"
+                      : "hover:text-red-500")
+                  }
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Auth / Profile */}
+          <div className="hidden md:flex items-center gap-3 relative" ref={dropdownRef}>
+            {user ? (
+              <>
+                {/* Profile Button */}
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-2 py-1 rounded-full transition"
+                >
+                  <Image
+                    src={user.avatar || "/images/avatar.png"}
+                    alt="Profile Avatar"
+                    width={32}
+                    height={32}
+                    className="rounded-full object-cover"
+                  />
+                  <span className="text-white font-medium">
+                    {user.fullName.split(" ")[0]}
+                  </span>
+                  <svg
+                    className="w-4 h-4 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </button>
+
+                {/* Dropdown Menu */}
+                <div
+                  className={
+                    "absolute right-0 mt-2 w-44 bg-white rounded-md shadow-lg overflow-hidden transition-all duration-200 " +
+                    (dropdownOpen
+                      ? "opacity-100 scale-100"
+                      : "opacity-0 scale-95 pointer-events-none")
+                  }
+                >
+                  <Link
+                    href="/dashboard"
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/settings"
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Settings
+                  </Link>
+                  <button
+                    onClick={() => { logout(); setDropdownOpen(false); }}
+                    className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
                 </div>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="px-4 py-1.5 rounded-md border border-white text-white font-semibold hover:bg-red-600 transition-colors duration-200 shadow-sm"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className="px-4 py-1.5 rounded-md border border-white text-white font-semibold hover:bg-red-600 transition-colors duration-200 shadow-sm"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
 
-                {/* Mobile panel */}
-                <div className={"md:hidden overflow-hidden transition-[max-height] duration-300 " + (open ? "max-h-96" : "max-h-0")}>
-                    <div className="pb-4 pt-2 border-t border-black/10 dark:border-white/10">
-                        <div className="flex flex-col gap-2">
-                            {NAV_LINKS.map((link) => (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    onClick={() => setOpen(false)}
-                                    className={
-                                        "rounded-md px-2 py-2 text-sm font-medium transition-colors hover:bg-foreground/5 " +
-                                        (isActive(link.href) ? "text-foreground" : "text-foreground/70")
-                                    }
-                                >
-                                    {link.label}
-                                </Link>
-                            ))}
+        {/* ===== Mobile Menu ===== */}
+        <div
+          className={
+            "md:hidden overflow-hidden transition-all duration-300 " +
+            (mobileOpen ? "max-h-96 py-3" : "max-h-0")
+          }
+        >
+          <div className="flex flex-col gap-2 text-white">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className={
+                  "px-3 py-2 rounded-md transition-colors duration-200 " +
+                  (isActive(link.href)
+                    ? "bg-red-500 text-white"
+                    : "hover:bg-white/10 hover:text-red-500")
+                }
+              >
+                {link.label}
+              </Link>
+            ))}
 
-                            <div className="mt-2 flex items-center gap-2">
-                                <Link
-                                    href="/login"
-                                    className="flex-1 h-9 px-3 inline-flex items-center justify-center rounded-md border border-black/10 dark:border-white/15 text-sm font-medium hover:bg-foreground/5 transition-colors"
-                                >
-                                    Log in
-                                </Link>
-                                <Link
-                                    href="/register"
-                                    className="flex-1 h-9 px-3 inline-flex items-center justify-center rounded-md bg-foreground text-background text-sm font-semibold hover:opacity-90 transition-opacity"
-                                >
-                                    Sign up
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </header >
-    );
+            {/* Mobile Auth */}
+            <div className="flex gap-2 mt-3">
+              {user ? (
+                <button
+                  onClick={logout}
+                  className="flex-1 px-3 py-2 bg-white text-red-500 rounded-md font-medium"
+                >
+                  Logout
+                </button>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="flex-1 px-3 py-2 border border-white rounded-md text-center font-medium hover:bg-white hover:text-red-500 transition"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="flex-1 px-3 py-2 bg-red-500 text-white rounded-md text-center font-semibold"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+  );
 }

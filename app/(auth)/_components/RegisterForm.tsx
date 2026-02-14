@@ -47,12 +47,12 @@ export default function RegisterForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit(submit)} className="space-y-4">
+        <form onSubmit={handleSubmit(submit)} className="space-y-4 text-white">
             {error && (
                 <p className="text-sm text-red-600">{error}</p>
             )}
             <div className="space-y-1 ">
-                <label className="text-sm font-medium" htmlFor="fullName">Full name</label>
+                <label className="text-sm font-medium" htmlFor="fullName">Full Name</label>
                 <input
                     id="fullName"
                     type="text"
@@ -128,13 +128,13 @@ export default function RegisterForm() {
             <button
                 type="submit"
                 disabled={isSubmitting || pending}
-                className="h-10 w-full rounded-md bg-foreground text-background text-sm font-semibold hover:opacity-90 disabled:opacity-60"
+                className="h-10 w-full rounded-md bg-[#463CFC] text-sm font-semibold text-white hover:underline hover:text-red-600 hover:opacity-90 disabled:opacity-60"
             >
                 {isSubmitting || pending ? "Creating account..." : "Create account"}
             </button>
 
             <div className="mt-1 text-center text-sm">
-                Already have an account? <Link href="/login" className="font-semibold hover:underline">Log in</Link>
+                Already have an account? <Link href="/login" className="font-semibold hover:underline text-blue-500">Log in</Link>
             </div>
         </form>
     );

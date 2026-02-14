@@ -47,6 +47,7 @@ export default function LoginForm() {
         })
     };
 
+
     return (
         <form onSubmit={handleSubmit(submit)} className="space-y-4">
             {error && (
@@ -58,7 +59,7 @@ export default function LoginForm() {
                     id="email"
                     type="email"
                     autoComplete="email"
-                    className="h-10 w-full rounded-md border border-black/10 dark:border-white/15 bg-background px-3 text-sm outline-none focus:border-foreground/40"
+                    className="h-10 w-full rounded-md border text-black border-black/10 bg-background px-3 text-sm outline-none focus:border-foreground/40"
                     {...register("email")}
                     placeholder="you@example.com"
                 />
@@ -73,7 +74,7 @@ export default function LoginForm() {
                     id="password"
                     type="password"
                     autoComplete="current-password"
-                    className="h-10 w-full rounded-md border border-black/10 dark:border-white/15 bg-background px-3 text-sm outline-none focus:border-foreground/40"
+                    className="h-10 w-full rounded-md border border-black/10 text-black bg-background px-3 text-sm outline-none focus:border-foreground/40"
                     {...register("password")}
                     placeholder="••••••"
                 />
@@ -85,13 +86,16 @@ export default function LoginForm() {
             <button
                 type="submit"
                 disabled={isSubmitting || pending}
-                className="h-10 w-full rounded-md bg-foreground text-background text-sm font-semibold hover:opacity-90 disabled:opacity-60"
+                className="h-10 w-full rounded-md bg-[#463CFC] text-sm font-semibold text-white hover:underline hover:text-red-600 hover:opacity-90 disabled:opacity-60"
             >
                 {isSubmitting || pending ? "Logging in..." : "Log in"}
             </button>
 
             <div className="mt-1 text-center text-sm">
-                Don't have an account? <Link href="/register" className="font-semibold hover:underline">Sign up</Link>
+                Don't have an account? <Link href="/register" className="font-semibold hover:underline text-[#463CFC] hover:underline hover:text-red-600">Sign up</Link>
+            </div>
+            <div className="mt-1 text-center text-sm">
+                <Link href="/forget-password" className="font-semibold text-[#463CFC] hover:underline hover:text-red-600">Forgot Password?</Link>
             </div>
         </form>
     );

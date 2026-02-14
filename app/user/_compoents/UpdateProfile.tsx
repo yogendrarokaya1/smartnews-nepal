@@ -134,16 +134,7 @@ export default function UpdateUserForm({
                     />
                     {errors.image && <p className="text-sm text-red-600">{errors.image.message}</p>}
                 </div>
-                <div>
-                    <label className="block text-sm font-medium mb-1" htmlFor="phoneNumber">Phone Number</label>
-                    <input
-                        id="phoneNumber"
-                        type="text"
-                        {...register("phoneNumber")}
-                        className="w-full border border-gray-300 rounded px-3 py-2"
-                    />
-                    {errors.phoneNumber && <p className="text-sm text-red-600">{errors.phoneNumber.message}</p>}
-                </div>
+                
                 <div>
                     <label className="block text-sm font-medium mb-1" htmlFor="email">Email</label>
                     <input
@@ -154,7 +145,7 @@ export default function UpdateUserForm({
                     />
                     {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
                 </div>
-                {/* Full Name Input */}
+                {/* First Name Input */}
                 <div>
                     <label className="block text-sm font-medium mb-1" htmlFor="fullName">Full Name</label>
                     <input
@@ -164,6 +155,18 @@ export default function UpdateUserForm({
                         className="w-full border border-gray-300 rounded px-3 py-2"
                     />
                     {errors.fullName && <p className="text-sm text-red-600">{errors.fullName.message}</p>}
+                </div>
+
+                {/* Phone Number Input */}
+                <div>
+                    <label className="block text-sm font-medium mb-1" htmlFor="phoneNumber">Phone Number</label>
+                    <input
+                        id="phoneNumber"
+                        type="text"
+                        {...register("phoneNumber")}
+                        className="w-full border border-gray-300 rounded px-3 py-2"
+                    />
+                    {errors.phoneNumber && <p className="text-sm text-red-600">{errors.phoneNumber.message}</p>}
                 </div>
 
                 {/* Submit Button */}

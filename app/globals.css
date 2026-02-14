@@ -1,13 +1,50 @@
 @import "tailwindcss";
 
-/* :root {
+/* ===== Root Variables (Original Theme) ===== */
+:root {
   --background: #ffffff;
   --foreground: #171717;
-} */
 
+  /* Optional font vars if you use Geist / custom fonts */
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: monospace;
+}
+
+/* Tailwind inline theme mapping */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+/* ===== Base Styles ===== */
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}
+
+/* ===== Links ===== */
+a {
+  text-decoration: none;
+}
+
+/* ===== Box sizing ===== */
+* {
+  box-sizing: border-box;
+}
+
+/* ===== Images ===== */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }

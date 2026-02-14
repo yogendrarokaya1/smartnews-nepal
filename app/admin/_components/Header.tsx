@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import ThemeToggle from "@/app/_components/ThemeToggle";
+// import ThemeToggle from "@/app/_components/ThemeToggle";
 
 export default function Header() {
     const { logout, user } = useAuth();
@@ -22,7 +22,7 @@ export default function Header() {
                         </Link>
                     </div>
                     <div className="flex items-center gap-2">
-                                                <ThemeToggle />
+                                                {/* <ThemeToggle /> */}
                         
                         <div className="h-6 flex items-center justify-center text-xs font-semibold">
                             {user?.email || 'Admin'}

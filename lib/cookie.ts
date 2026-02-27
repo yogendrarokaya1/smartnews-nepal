@@ -9,7 +9,7 @@ interface UserData {
     role: string;
     createdAt: string;
     updatedAt: string;
-    [key: string]: any;
+    [key: string]: string;
 }
 export const setAuthToken = async (token: string) => {
     const cookieStore = await cookies();

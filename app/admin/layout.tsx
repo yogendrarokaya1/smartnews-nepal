@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className='flex w-full min-h-screen'>
             <div className='page-wrapper flex w-full'>
                 {/* Header/sidebar */}
-                <div className='xl:block hidden'>
+                <div className='xl:block hidden h-screen sticky top-0'>
                     <Sidebar />
                 </div>
                 <div className='w-full bg-background'>

@@ -14,6 +14,18 @@ const config: NextConfig = {
         port: '5000',
         pathname: '/uploads/**',
       },
+      // YouTube thumbnails
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+        pathname: '/vi/**',
+      },
+      // Optional: Vimeo thumbnails (if you use Vimeo)
+      {
+        protocol: 'https',
+        hostname: 'i.vimeocdn.com',
+        pathname: '/**',
+      },
     ]
   },
 }

@@ -35,7 +35,7 @@ export default function LoginForm() {
                         return router.replace("/admin");
                     }
                     if (response.data?.role === 'user') {
-                        return router.replace("/user/dashboard");
+                        return router.replace("/");
                     }
                     return router.replace("/");
                 } else {
